@@ -1,0 +1,493 @@
+{
+    "zwierzeta": [
+        {
+            "id": "Z01",
+            "gatunek": "Pies",
+            "rasa": "Mieszaniec",
+            "imie": "Burek",
+            "wiek": 4,
+            "opis": "Bardzo energiczny i radosny",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-10 09:15:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Kwarantanna",
+                    "pracownik_id": "P02"
+                },
+                {
+                    "data": "2026-05-24 10:00:00",
+                    "stary_status": "Kwarantanna",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P04"
+                }
+            ]
+        },
+        {
+            "id": "Z02",
+            "gatunek": "Kot",
+            "rasa": "Dachowiec",
+            "imie": "Mruczek",
+            "wiek": 2,
+            "opis": "Lubi spać na kolanach",
+            "stan_zdrowia": "Wymaga odrobaczenia",
+            "status": "W leczeniu",
+            "historia": [
+                {
+                    "data": "2026-06-01 11:30:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "W leczeniu",
+                    "pracownik_id": "P04"
+                }
+            ]
+        },
+        {
+            "id": "Z03",
+            "gatunek": "Pies",
+            "rasa": "Owczarek",
+            "imie": "Rex",
+            "wiek": 6,
+            "opis": "Posłuszny, zna podstawowe komendy",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Adoptowane",
+            "historia": [
+                {
+                    "data": "2026-04-20 14:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                },
+                {
+                    "data": "2026-05-05 16:45:00",
+                    "stary_status": "Do adopcji",
+                    "nowy_status": "Adoptowane",
+                    "pracownik_id": "P03"
+                }
+            ]
+        },
+        {
+            "id": "Z04",
+            "gatunek": "Pies",
+            "rasa": "Labrador",
+            "imie": "Luna",
+            "wiek": 1,
+            "opis": "Wszędzie jej pełno, uwielbia dzieci",
+            "stan_zdrowia": "Zdrowa",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-06-02 08:20:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P02"
+                }
+            ]
+        },
+        {
+            "id": "Z05",
+            "gatunek": "Kot",
+            "rasa": "Brytyjski",
+            "imie": "Puszek",
+            "wiek": 5,
+            "opis": "Spokojny, nie lubi hałasu",
+            "stan_zdrowia": "Z nadwagą",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-12 12:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                }
+            ]
+        },
+        {
+            "id": "Z06",
+            "gatunek": "Pies",
+            "rasa": "Buldog",
+            "imie": "Gaston",
+            "wiek": 3,
+            "opis": "Głośno chrapie, bardzo przyjacielski",
+            "stan_zdrowia": "Problemy z oddychaniem",
+            "status": "W leczeniu",
+            "historia": [
+                {
+                    "data": "2026-06-03 09:10:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "W leczeniu",
+                    "pracownik_id": "P04"
+                }
+            ]
+        },
+        {
+            "id": "Z07",
+            "gatunek": "Kot",
+            "rasa": "Sfinks",
+            "imie": "Zgred",
+            "wiek": 2,
+            "opis": "Wymaga ciepłego domu",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Adoptowane",
+            "historia": [
+                {
+                    "data": "2026-05-01 10:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P02"
+                },
+                {
+                    "data": "2026-05-18 15:30:00",
+                    "stary_status": "Do adopcji",
+                    "nowy_status": "Adoptowane",
+                    "pracownik_id": "P01"
+                }
+            ]
+        },
+        {
+            "id": "Z08",
+            "gatunek": "Pies",
+            "rasa": "Husky",
+            "imie": "Bora",
+            "wiek": 4,
+            "opis": "Potrzebuje dużo ruchu i przestrzeni",
+            "stan_zdrowia": "Zdrowa",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-28 13:20:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P03"
+                }
+            ]
+        },
+        {
+            "id": "Z09",
+            "gatunek": "Kot",
+            "rasa": "Dachowiec",
+            "imie": "Kluska",
+            "wiek": 8,
+            "opis": "Starsza, spokojna kotka",
+            "stan_zdrowia": "Chora tarczyca",
+            "status": "W leczeniu",
+            "historia": [
+                {
+                    "data": "2026-06-04 11:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "W leczeniu",
+                    "pracownik_id": "P04"
+                }
+            ]
+        },
+        {
+            "id": "Z10",
+            "gatunek": "Pies",
+            "rasa": "Amstaff",
+            "imie": "Killer",
+            "wiek": 5,
+            "opis": "Wbrew imieniu to oaza spokoju",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-20 14:15:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Kwarantanna",
+                    "pracownik_id": "P02"
+                },
+                {
+                    "data": "2026-06-03 10:00:00",
+                    "stary_status": "Kwarantanna",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                }
+            ]
+        },
+        {
+            "id": "Z11",
+            "gatunek": "Kot",
+            "rasa": "Maine Coon",
+            "imie": "Leo",
+            "wiek": 3,
+            "opis": "Bardzo duży kot, łagodny olbrzym",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-06-05 09:30:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P03"
+                }
+            ]
+        },
+        {
+            "id": "Z12",
+            "gatunek": "Pies",
+            "rasa": "Jamnik",
+            "imie": "Parówka",
+            "wiek": 7,
+            "opis": "Uparty, lubi kopać doły",
+            "stan_zdrowia": "Problemy z kręgosłupem",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-25 12:45:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P02"
+                }
+            ]
+        },
+        {
+            "id": "Z13",
+            "gatunek": "Pies",
+            "rasa": "Beagle",
+            "imie": "Snoopy",
+            "wiek": 2,
+            "opis": "Głośno szczeka, uciekinier",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Adoptowane",
+            "historia": [
+                {
+                    "data": "2026-05-10 11:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                },
+                {
+                    "data": "2026-06-02 16:10:00",
+                    "stary_status": "Do adopcji",
+                    "nowy_status": "Adoptowane",
+                    "pracownik_id": "P05"
+                }
+            ]
+        },
+        {
+            "id": "Z14",
+            "gatunek": "Kot",
+            "rasa": "Perski",
+            "imie": "Księżniczka",
+            "wiek": 4,
+            "opis": "Wymaga codziennego czesania",
+            "stan_zdrowia": "Zdrowa",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-06-06 08:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P03"
+                }
+            ]
+        },
+        {
+            "id": "Z15",
+            "gatunek": "Pies",
+            "rasa": "Pudel",
+            "imie": "Czoko",
+            "wiek": 1,
+            "opis": "Bystry, szybko się uczy",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Kwarantanna",
+            "historia": [
+                {
+                    "data": "2026-06-05 14:20:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Kwarantanna",
+                    "pracownik_id": "P02"
+                }
+            ]
+        },
+        {
+            "id": "Z16",
+            "gatunek": "Kot",
+            "rasa": "Dachowiec",
+            "imie": "Rudy",
+            "wiek": 5,
+            "opis": "Uwielbia polować na muchy",
+            "stan_zdrowia": "Lekko kuleje",
+            "status": "W leczeniu",
+            "historia": [
+                {
+                    "data": "2026-06-03 13:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "W leczeniu",
+                    "pracownik_id": "P04"
+                }
+            ]
+        },
+        {
+            "id": "Z17",
+            "gatunek": "Pies",
+            "rasa": "Mieszaniec",
+            "imie": "Szczęściarz",
+            "wiek": 10,
+            "opis": "Spokojny starszy pan",
+            "stan_zdrowia": "Słaby wzrok",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-15 09:00:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                }
+            ]
+        },
+        {
+            "id": "Z18",
+            "gatunek": "Pies",
+            "rasa": "Doberman",
+            "imie": "Ares",
+            "wiek": 3,
+            "opis": "Świetny stróż, nieufny do obcych",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-05-22 10:30:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Kwarantanna",
+                    "pracownik_id": "P02"
+                },
+                {
+                    "data": "2026-06-04 12:00:00",
+                    "stary_status": "Kwarantanna",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P03"
+                }
+            ]
+        },
+        {
+            "id": "Z19",
+            "gatunek": "Kot",
+            "rasa": "Syjamski",
+            "imie": "Taj",
+            "wiek": 2,
+            "opis": "Bardzo głośny, domaga się uwagi",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-06-01 15:45:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P05"
+                }
+            ]
+        },
+        {
+            "id": "Z20",
+            "gatunek": "Pies",
+            "rasa": "Chihuahua",
+            "imie": "Tito",
+            "wiek": 4,
+            "opis": "Zmieści się do torebki",
+            "stan_zdrowia": "Zdrowy",
+            "status": "Do adopcji",
+            "historia": [
+                {
+                    "data": "2026-06-05 11:15:00",
+                    "stary_status": "Nowy",
+                    "nowy_status": "Do adopcji",
+                    "pracownik_id": "P01"
+                }
+            ]
+        }
+    ],
+    "pracownicy": [
+        {
+            "imie": "Jan",
+            "nazwisko": "Kowalski",
+            "pesel": "85011012345",
+            "telefon": "500-111-222",
+            "id_pracownika": "P01",
+            "stanowisko": "Administrator",
+            "haslo": "admin123"
+        },
+        {
+            "imie": "Anna",
+            "nazwisko": "Nowak",
+            "pesel": "92031598765",
+            "telefon": "600-333-444",
+            "id_pracownika": "P02",
+            "stanowisko": "Opiekun zwierząt",
+            "haslo": "haslo123"
+        },
+        {
+            "imie": "Marek",
+            "nazwisko": "Zieliński",
+            "pesel": "88112233445",
+            "telefon": "700-555-666",
+            "id_pracownika": "P03",
+            "stanowisko": "Starszy Opiekun",
+            "haslo": "haslo123"
+        },
+        {
+            "imie": "Ewa",
+            "nazwisko": "Wiśniewska",
+            "pesel": "80070744556",
+            "telefon": "800-777-888",
+            "id_pracownika": "P04",
+            "stanowisko": "Weterynarz",
+            "haslo": "vet123"
+        },
+        {
+            "imie": "Piotr",
+            "nazwisko": "Kamiński",
+            "pesel": "95090911223",
+            "telefon": "500-999-000",
+            "id_pracownika": "P05",
+            "stanowisko": "Recepcjonista",
+            "haslo": "haslo123"
+        }
+    ],
+    "klienci": [
+        {
+            "imie": "Tomasz",
+            "nazwisko": "Wójcik",
+            "pesel": "90051254321",
+            "telefon": "555-123-456",
+            "warunki_mieszkaniowe": "Dom z ogrodem",
+            "inne_zwierzeta": 0
+        },
+        {
+            "imie": "Karolina",
+            "nazwisko": "Dąbrowska",
+            "pesel": "94082365432",
+            "telefon": "666-987-654",
+            "warunki_mieszkaniowe": "Mieszkanie w bloku",
+            "inne_zwierzeta": 1
+        },
+        {
+            "imie": "Michał",
+            "nazwisko": "Lewandowski",
+            "pesel": "85022876543",
+            "telefon": "777-111-222",
+            "warunki_mieszkaniowe": "Dom szeregowy",
+            "inne_zwierzeta": 1
+        }
+    ],
+    "adopcje": [
+        {
+            "data": "2026-05-05",
+            "zwierze_id": "Z03",
+            "nowy_wlasciciel_pesel": "90051254321",
+            "pracownik_id": "P03"
+        },
+        {
+            "data": "2026-05-18",
+            "zwierze_id": "Z07",
+            "nowy_wlasciciel_pesel": "94082365432",
+            "pracownik_id": "P01"
+        },
+        {
+            "data": "2026-06-02",
+            "zwierze_id": "Z13",
+            "nowy_wlasciciel_pesel": "85022876543",
+            "pracownik_id": "P05"
+        }
+    ]
+}
