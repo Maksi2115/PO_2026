@@ -38,10 +38,29 @@ class Zwierze():
     @property
     def id(self):
         return self.__id
+    
+    @property
+    def imie(self):
+        return self.__imie
+    
+    @property
+    def historia(self):
+        return self.__historia
 
     @property
     def status(self):
         return self.__status
+    
+    def ustaw_stan_zdrowia(self, nowy_stan):
+        self.__stan_zdrowia = nowy_stan
+
+    def ustaw_opis(self, nowy_opis):
+        self.__opis = nowy_opis
+
+    def ustaw_wiek(self, nowy_wiek):
+        if int(nowy_wiek) < 0:
+            raise ValueError("wiek zwierzęcie nie morez być ujemny")
+        self.__wiek = int(nowy_wiek)
 
     def to_dict(self):
         return {
@@ -77,6 +96,22 @@ class Adopcja():
 class Wpis():
     def __init__(self, data, stary_status, nowy_status, pracownik_id):
         self.__data, self.__stary_status, self.__nowy_status, self.__pracownik_id = data, stary_status, nowy_status, pracownik_id
+
+    @property
+    def data(self):
+        return self.__data
+    
+    @property
+    def stary_status(self):
+        return self.__stary_status
+    
+    @property
+    def nowy_status(self):
+        return self.__nowy_status
+    
+    @property
+    def pracownik_id(self):
+        return self.__pracownik_id
 
     def __str__(self):
         message = f"{self.__data:%Y-%m-%d %H:%M:%S} - zmiana statusu z `{self.__stary_status}` na `{self.__nowy_status}`, wykonana przez pracownika {self.__pracownik_id}"    

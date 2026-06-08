@@ -52,6 +52,18 @@ class OsobaAdoptujaca(Osoba):
             "inne_zwierzeta": self.__inne_zwierzeta
         }
     
+    def czy_moze_adoptowac(self):
+        warunki = self.__warunki_mieszkaniowe.lower()
+
+        if 'ulica' in warunki or 'brak' in warunki:
+            return False, 'Nie odpowedznie warunki mieszkaniowe'
+        
+        if int(self.__inne_zwierzeta) > 3:
+            return False, 'Posiada juz zbyt duzo zwierzat'
+    
+        return True, 'Spelnia kryteria adopcji'
+        
+    
     @classmethod
     def from_dict(cls, d):
         return cls(d["imie"], d["nazwisko"], d["pesel"], d["telefon"], d["warunki_mieszkaniowe"], d["inne_zwierzeta"])
@@ -71,6 +83,26 @@ class Pracownik(Osoba):
     @property
     def stanowisko(self):
         return self.__stanowisko
+    
+    def ustaw_imie(self, nowe_imie):
+        self.__imie = nowe_imie
+
+    def ustaw_nazwisko(self, nowe_nazwisko):
+        self.__nazwisko = nowe_nazwisko
+
+    def ustaw_pesel(self, nowy_pesel):
+        self.__pesel = nowy_pesel
+
+    def ustaw_telefon(self, nowy_numer):
+        self.__telefon = nowy_numer
+
+    def ustaw_stanowisko(self, nowe_stanowisko):
+        if not nowe_stanowisko.strip():
+            raise ValueError("Stanowisko nie moze byc puste")
+        self.__stanowisko = nowe_stanowisko
+
+    def ustaw_haslo(self, nowe_haslo):
+        self.__haslo = nowe_haslo
     
     def __str__(self):
         return f"{self.__id:<5} | {self.imie:<10} | {self.nazwisko:<15} | {self.stanowisko:<15}"
