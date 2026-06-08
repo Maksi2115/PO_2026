@@ -1,19 +1,9 @@
 # Do zrobienia na pewno: (zrobisz to usuń)(wpadniesz na coś dopisz):
-# 
-#   - OPCJE (4, 10, 11) - do dokończenia
-#   - Zarządzanie pracownikami - opcja dostępna tylko dla administratora
-#       - Dodawanie pracowników (z generowaniem ID (jest już u zwierząt))
-#       - (?) generowanie hasła
-#       - Usuwanie pracowników
-#       - (?) Modyfikowanie danych pracowników (np. zmiana stanowiska) 
-#   - (?) Własne wyjątki
-#   - Raporty (np. liczba zwierząt, liczba adopcji w danym miesiącu, itp.)
-#   - Coś dla OsobyAdpotującej (metoda)
-#   - Modyfikacja danych zwierząt (np. aktualizacja stanu zdrowia, itp.)
-#
+
 from schronisko import Schronisko
 from osoby import Pracownik, OsobaAdoptujaca
 from zwierzeta import Zwierze
+import random
 
 
 def logowanie(schronisko):
@@ -55,12 +45,13 @@ def uruchom_menu():
         print("8. Przyjmij nowe zwierzę")
         print("9. Przeprowadź adopcję")
         print("10. Sprawdź historię zwierzęcia")
+        print("11. Wygeneruj raport")
 
         if zalogowany_pracownik.stanowisko.lower() == "administrator":
-            print("11. [ADMIN] Zarządzaj pracownikami")
-            opcje_msg = "Wybierz opcję (1-11): "
+            print("12. [ADMIN] Zarządzaj pracownikami")
+            opcje_msg = "Wybierz opcję (1-12): "
         else:
-            opcje_msg = "Wybierz opcję (1-10): "
+            opcje_msg = "Wybierz opcję (1-11): "
 
         wybor = input(opcje_msg).strip()
         print("-" * 40)
@@ -121,8 +112,56 @@ def uruchom_menu():
         
         # ZMIANA DANYCH ZWIERZĘCIA
         elif wybor == "4":
-            continue
-            # DO DOKOŃCZENIA
+            print('Edycja zwierzaków')
+            id_zwierzaka = input('Podaj id zwierzaka, ktorego chcezsz edytowac: ')
+            zwierzak_szukany = moje_schronisko.znajdz_zwierze_po_id(id_zwierzaka)
+
+            if not zwierzak_szukany:
+                print(f'Nie znaleziono zwierzaka o id {id_zwierzaka}')
+                continue
+
+            print(f'Wybrano: {zwierzak_szukany.imie} (ID: {zwierzak_szukany.id})')
+            print('1. Zmień stan zdrowia')
+            print('2. Zmień opis')
+            print('3. Zmień wiek')
+            print('4. Zmień status')# z zapisem do historii
+            print('5. Powrót')
+
+            wybor_edycji = input("Wybierz opcje edycji zwierzaka").strip()
+
+            try:
+                if wybor_edycji == '1':
+                    nowy_stan = input('Podaj nowy stan zdrowia: ').strip
+                    if nowy_stan:
+                        zwierze.ustaw_stan_zdrowia(nowy_stan)
+                    else:
+                        print("Wartość nie może być pusta!")
+                        
+                elif wybor_edycji == "2":
+                    nowy_opis = input("Podaj nowy opis: ").strip()
+                    if nowy_opis:
+                        zwierzak_szukany.ustaw_opis(nowy_opis)
+  
+                    else:
+                        print("Wartość nie może być pusta!")
+                        
+                elif wybor_edycji == "3":
+                    nowy_wiek = input("Podaj nowy wiek: ").strip()
+                    zwierzak_szukany.ustaw_wiek(nowy_wiek)
+                    
+                elif wybor_edycji == "4":
+                    nowy_status = input("Podaj nowy status (np. Kwarantanna, W leczeniu, Do adopcji): ").strip()
+                    if nowy_status:
+                        zwierzak_szukany.zmien_status(zalogowany_pracownik, nowy_status)
+                    else:
+                        print("Status nie może być pusty!")
+
+                print(f"Pomyślnie zaktualizowano.")
+                moje_schronisko.zapisz_dane()   
+            except ValueError as error:
+                print(f"\n[BŁĄD WALIDACJI]: {error}")
+            except Exception as error:
+                print(f"\n[NIEOCZEKIWANY BŁĄD]: {error}")
 
         # PRACOWNICY
         elif wybor == "5":
@@ -220,8 +259,29 @@ def uruchom_menu():
 
         # HISTORIA ZWIERZĘCIA
         elif wybor == "10":
-            # DO DOKOŃCZENIA
-            continue
+            historia_zwierzaka = moje_schronisko.zwierzeta
+            id_zwierzaka = input("Podaj id zwierzaka: ").strip()
+            zwierzak_szukany = moje_schronisko.znajdz_zwierze_po_id(id_zwierzaka)
+            
+            if zwierzak_szukany is None: 
+                print('Nie znaleziono takie zwirzaka')           
+            else:
+                if not zwierzak_szukany.historia:
+                    print(f"Zwierzak: {zwierzak_szukany.id}, {zwierzak_szukany.imie} nie ma histroii")
+                else:
+                    print(f"Historia: {zwierzak_szukany.imie}")
+                    print('-'*40)
+                    
+                    for wpis in zwierzak_szukany.historia:
+                        print(f'Data: {wpis.data}')
+                        print(f'Stary status: {wpis.stary_status}')
+                        print(f'Nowy status: {wpis.nowy_status}')
+                        print(f'Pracownik: {wpis.pracownik_id}')
+                        print('-'*40)
+
+        # GENEROWANIE RAPORTU                
+        elif wybor == "11":
+            moje_schronisko.generuj_raport()
 
         # ZAPIS I WYJŚCIE
         elif wybor == "0":
@@ -229,13 +289,105 @@ def uruchom_menu():
             print("Zamykanie programu. Do widzenia!")
             break
 
-        elif wybor == "11" and zalogowany_pracownik.stanowisko.lower() == "administrator":
+        elif wybor == "12" and zalogowany_pracownik.stanowisko.lower() == "administrator":
             print("\n [ADMIN] ZARZĄDZANIE PRACOWNIKAMI")
-            # DO DOKOŃCZENIA
+            
+            print("1. Dodaj pracownika")
+            print("2. Edycja pracownika")
+            print("3. Usun pracownika")
 
+            wybor_admina = input("Wybierz kategorie: ")
+            if wybor_admina == '1':
+                print('Wpisz dane nowego pracownika')
+                try:
+                    imie_pracownika = input("Podaj imie pracownika ")
+                    nazwisko_pracownika = input("Podaj nazwisko pracownika: ")
+                    pesel_pracownika = input("Podaj pesel pracwonika: ")
+                    telefon_pracownika = input("Podaj numer telefonu pracownika: ")
+                    id_pracownika = f"P{int(moje_schronisko.pracownicy[-1].id[1:])+1}" if moje_schronisko.pracownicy else "P01"
+                    stanowisko_pracownika = input("Podaj stanowisko pracownika: ")
+                    liczby = "".join(str(x) for x in random.choices(range(1, 10), k=3))
+                    nazwa = stanowisko_pracownika.lower().strip()[:3]
+                    haslo_pracownika = f"{nazwa}{liczby}"
+
+                    nowy = Pracownik(imie_pracownika, nazwisko_pracownika, pesel_pracownika, telefon_pracownika, id_pracownika, stanowisko_pracownika, haslo_pracownika)
+
+                    moje_schronisko.dodaj_pracownika(nowy)
+                    moje_schronisko.zapisz_dane()
+                    print(f"Utworzono nowego pracownika: ID: {id_pracownika}, Hasło: {haslo_pracownika}")
+                except ValueError as error:
+                    print(f"\n[BŁĄD DANYCH]: Nie udało się dodać pracownika. Powód: {error}")
+                except Exception as error:
+                    print(f"\n[NIEOCZEKIWANY BŁĄD]: {error}")
+                
+            if wybor_admina == '2':
+                print('Edycja pracownikow')
+                wybor_edycji_id = input('Podaj id pracownika do edycj: ').strip()
+                pracownik_do_edycji = moje_schronisko.znajdz_pracownika_po_id(wybor_edycji_id)
+
+                if not pracownik_do_edycji:
+                    print(f"Nie ma takiego pracownika o id {wybor_edycji_id}")
+
+                print(f'Edycja: {pracownik_do_edycji.imie} {pracownik_do_edycji.nazwisko} (Id: {pracownik_do_edycji.id})')
+                print("1. Edytuj imie")
+                print("2. Edytuj nazwisko")
+                print("3. Edytuj pesel")
+                print("4. Edytuj numer telefonu")
+                print("5. Edytuj stanowisko") # i samo sie zmeini haslo
+
+                opcja_edycji = input("Podaj pole do edycji: ")
+                try:
+                    if opcja_edycji == "1":
+                        nowe_imie = input("Podaj nowe imie: ").strip()
+                        pracownik_do_edycji.ustaw_imie(nowe_imie)
+                        moje_schronisko.zapisz_dane()
+                        
+                    elif opcja_edycji == "2":
+                        nowe_nazwisko = input('Podaj nowe nazwisko: ').strip()
+                        pracownik_do_edycji.ustaw_nazwisko(nowe_nazwisko)
+                        moje_schronisko.zapisz_dane()                 
+                    
+                    elif opcja_edycji == "3":
+                        nowy_pesel = input('Podaj nowy pesel: ').strip()
+                        pracownik_do_edycji.ustaw_pesel(nowy_pesel)
+                        moje_schronisko.zapisz_dane()
+
+                    elif opcja_edycji == "4":
+                        nowy_numer = input('Podaj nowy numer telefonu: ').strip()
+                        pracownik_do_edycji.ustaw_telefon(nowy_numer)
+
+                    elif opcja_edycji == "5":
+                        nowe_stanowisko = input('Podaj nowe stanowisko: ').strip()
+                        pracownik_do_edycji.ustaw_stanowisko(nowe_stanowisko)
+
+                        liczby = "".join(str(x) for x in random.choices(range(1, 10), k=3))
+                        nazwa = nowe_stanowisko.lower().strip()[:3]
+                        haslo_nowe = f"{nazwa}{liczby}"
+                        pracownik_do_edycji.ustaw_haslo(haslo_nowe)
+
+                    moje_schronisko.zapisz_dane()
+                    print('Edycja udana')
+                except ValueError as error:
+                    print(f"\n[BŁĄD WALIDACJI]: {error}")
+
+            if wybor_admina == '3' :
+                print('Usuwanie pracownika')
+                wybor_usuniecia_id = input('Podaj id pracownika do usuniecia: ').strip()
+                pracownik_do_usuniecia = moje_schronisko.znajdz_pracownika_po_id(wybor_usuniecia_id)
+
+                if not pracownik_do_usuniecia:
+                    print(f"Nie ma takiego pracownika o id {wybor_edycji_id}")
+                
+                potwierdzenie = input(f'Czy napweno chcesz ususnac pracownika: {pracownik_do_usuniecia.imie} {pracownik_do_usuniecia.nazwisko} (tak/nie)?')
+
+                if potwierdzenie.lower() == 'tak':
+                    moje_schronisko.usun_pracownika(pracownik_do_usuniecia)
+                    moje_schronisko.zapisz_dane()
+                    print('Pracownik usuniety')
+                else:
+                    print("Zla operacja")
         else:
             print("Niepoprawny wybór, spróbuj ponownie.")
-
 
 if __name__ == "__main__":
     uruchom_menu()
