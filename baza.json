@@ -31,7 +31,7 @@
             "imie": "Mruczek",
             "wiek": 2,
             "opis": "Lubi spać na kolanach",
-            "stan_zdrowia": "Wymaga odrobaczenia",
+            "stan_zdrowia": "Zdrowy",
             "status": "W leczeniu",
             "historia": [
                 {
@@ -73,7 +73,7 @@
             "imie": "Luna",
             "wiek": 1,
             "opis": "Wszędzie jej pełno, uwielbia dzieci",
-            "stan_zdrowia": "Zdrowa",
+            "stan_zdrowia": "Zdrowy",
             "status": "Do adopcji",
             "historia": [
                 {
@@ -271,7 +271,7 @@
             "imie": "Księżniczka",
             "wiek": 4,
             "opis": "Wymaga codziennego czesania",
-            "stan_zdrowia": "Zdrowa",
+            "stan_zdrowia": "Zdrowy",
             "status": "Do adopcji",
             "historia": [
                 {

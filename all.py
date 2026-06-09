@@ -1,7 +1,482 @@
-from schronisko import Schronisko
-from osoby import Pracownik, OsobaAdoptujaca
-from zwierzeta import Zwierze
+import datetime
+from abc import ABC, abstractmethod
+import json
+import datetime
+import os
 import random
+
+class Zwierze():
+    def __init__(self, id, gatunek, rasa, imie, wiek, opis, stan_zdrowia, status, historia=None):
+        if not str(id).strip():
+            raise ValueError("ID zwierzęcia nie może być puste!")
+        if not imie.strip():
+            raise ValueError("Imię zwierzęcia nie może być puste!")
+        if int(wiek) < 0:
+            raise ValueError("Wiek zwierzęcia nie może być ujemny!")
+        
+        self.__id = id
+        self.__gatunek = gatunek
+        self.__rasa = rasa
+        self.__imie = imie
+        self.__wiek = int(wiek)
+        self.__opis = opis
+        self.__stan_zdrowia = stan_zdrowia
+        self.__status = status
+        self.__historia = historia if historia is not None else []   
+
+    def get_info(self):
+        message = f"ID: {self.__id}, {self.__gatunek} {self.__rasa} o imieniu {self.__imie}, {self.__wiek} lat, {self.__stan_zdrowia} {self.__opis}, obecnie: {self.__status}"
+        return message
+    
+    def __str__(self):
+        opis = self.__opis if len(self.__opis) <= 37 else self.__opis[:37] + "..."
+        return f"{str(self.__id):<4} | {self.__gatunek:<8} | {self.__rasa:<10} | {self.__imie:<12} | {str(self.__wiek):<4} | {self.__stan_zdrowia:<25} | {opis:<40} | {self.__status:<15}"
+    
+
+    def zmien_status(self, pracownik, nowy_status):
+        data = datetime.datetime.now()
+        wpis = Wpis(data, self.__status, nowy_status, pracownik.id)
+        self.__status = nowy_status
+        self.__historia.append(wpis)
+        print(wpis)
+
+    @property
+    def id(self):
+        return self.__id
+    
+    @property
+    def imie(self):
+        return self.__imie
+    
+    @property
+    def historia(self):
+        return self.__historia
+
+    @property
+    def status(self):
+        return self.__status
+    
+    def ustaw_stan_zdrowia(self, nowy_stan):
+        self.__stan_zdrowia = nowy_stan
+
+    def ustaw_opis(self, nowy_opis):
+        self.__opis = nowy_opis
+
+    def ustaw_wiek(self, nowy_wiek):
+        if int(nowy_wiek) < 0:
+            raise ValueError("wiek zwierzęcie nie morez być ujemny")
+        self.__wiek = int(nowy_wiek)
+
+    def to_dict(self):
+        return {
+            "id": self.__id, "gatunek": self.__gatunek, "rasa": self.__rasa,
+            "imie": self.__imie, "wiek": self.__wiek, "opis": self.__opis,
+            "stan_zdrowia": self.__stan_zdrowia, "status": self.__status,
+            "historia": [w.to_dict() for w in self.__historia]
+        }
+
+    @classmethod
+    def from_dict(cls, d):
+        historia = [Wpis.from_dict(w) for w in d.get("historia", [])]
+        return cls(d["id"], d["gatunek"], d["rasa"], d["imie"], d["wiek"], d["opis"], d["stan_zdrowia"], d["status"], historia)
+
+
+class Adopcja():
+    def __init__(self, data, zwierze_id, nowy_wlasciciel_pesel, pracownik_id=None):
+        self.__data, self.__zwierze_id, self.__nowy_wlasciciel_pesel, self.__pracownik_id = data, zwierze_id, nowy_wlasciciel_pesel, pracownik_id
+
+    def __str__(self):
+        return f"{str(self.__data):<15} | {self.__zwierze_id:<15} | {self.__nowy_wlasciciel_pesel:<15} | {str(self.__pracownik_id):<15}"
+
+    def to_dict(self):
+        return {
+            "data": self.__data, "zwierze_id": self.__zwierze_id,
+            "nowy_wlasciciel_pesel": self.__nowy_wlasciciel_pesel, "pracownik_id": self.__pracownik_id
+        }
+    
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d["data"], d["zwierze_id"], d["nowy_wlasciciel_pesel"], d.get("pracownik_id"))
+
+class Wpis():
+    def __init__(self, data, stary_status, nowy_status, pracownik_id):
+        self.__data, self.__stary_status, self.__nowy_status, self.__pracownik_id = data, stary_status, nowy_status, pracownik_id
+
+    @property
+    def data(self):
+        return self.__data
+    
+    @property
+    def stary_status(self):
+        return self.__stary_status
+    
+    @property
+    def nowy_status(self):
+        return self.__nowy_status
+    
+    @property
+    def pracownik_id(self):
+        return self.__pracownik_id
+
+    def __str__(self):
+        message = f"{self.__data:%Y-%m-%d %H:%M:%S} - zmiana statusu z `{self.__stary_status}` na `{self.__nowy_status}`, wykonana przez pracownika {self.__pracownik_id}"    
+        return message
+    
+    def to_dict(self):
+        return {
+            "data": self.__data, "stary_status": self.__stary_status,
+            "nowy_status": self.__nowy_status, "pracownik_id": self.__pracownik_id
+        }
+    
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d["data"], d["stary_status"], d["nowy_status"], d["pracownik_id"])
+    
+
+class Osoba(ABC):
+    def __init__(self, imie, nazwisko, pesel, telefon):
+        if len(str(pesel)) != 11 or not str(pesel).isdigit():
+            raise ValueError("PESEL musi mieć 11 znaków!")
+        if not imie.strip() or not nazwisko.strip():
+            raise ValueError("Imię i nazwisko nie mogą być puste!")
+        self.__imie = imie
+        self.__nazwisko = nazwisko
+        self.__pesel = pesel
+        self.__telefon = telefon
+
+    @abstractmethod
+    def typ_osoby(self):
+        pass
+    
+    @property
+    def imie(self):
+        return self.__imie
+    
+    @property
+    def nazwisko(self):
+        return self.__nazwisko
+    
+    @property
+    def pesel(self):
+        return self.__pesel
+    
+    @property
+    def telefon(self):
+        return self.__telefon
+    
+
+class OsobaAdoptujaca(Osoba):
+    def __init__(self, imie, nazwisko, pesel, telefon, warunki_mieszkaniowe, inne_zwierzeta):
+        super().__init__(imie, nazwisko, pesel, telefon)
+        self.__warunki_mieszkaniowe = warunki_mieszkaniowe
+        self.__inne_zwierzeta = inne_zwierzeta
+
+    def __str__(self):
+        return f"{self.pesel:<11} | {self.imie:<10} | {self.nazwisko:<15} | {self.telefon:<15} | {self.__warunki_mieszkaniowe:<20} | {self.__inne_zwierzeta:<15}"
+    
+    def typ_osoby(self):
+        return "Osoba Adoptujaca"
+    
+    def to_dict(self):
+        return {
+            "imie": self.imie, "nazwisko": self.nazwisko, "pesel": self.pesel,
+            "telefon": self.telefon, "warunki_mieszkaniowe": self.__warunki_mieszkaniowe,
+            "inne_zwierzeta": self.__inne_zwierzeta
+        }
+    
+    def czy_moze_adoptowac(self):
+        warunki = self.__warunki_mieszkaniowe.lower()
+
+        if 'ulica' in warunki or 'brak' in warunki:
+            return False, 'Nie odpowedznie warunki mieszkaniowe'
+        
+        if int(self.__inne_zwierzeta) > 3:
+            return False, 'Posiada juz zbyt duzo zwierzat'
+    
+        return True, 'Spelnia kryteria adopcji'
+        
+    
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d["imie"], d["nazwisko"], d["pesel"], d["telefon"], d["warunki_mieszkaniowe"], d["inne_zwierzeta"])
+    
+ 
+class Pracownik(Osoba):
+    def __init__(self, imie, nazwisko, pesel, telefon, id, stanowisko, haslo):
+        super().__init__(imie, nazwisko, pesel, telefon)
+        self.__id = id
+        self.__stanowisko = stanowisko
+        self.__haslo = haslo
+    
+    @property
+    def id(self):
+        return self.__id
+    
+    @property
+    def stanowisko(self):
+        return self.__stanowisko
+    
+    def ustaw_imie(self, nowe_imie):
+        self.__imie = nowe_imie
+
+    def ustaw_nazwisko(self, nowe_nazwisko):
+        self.__nazwisko = nowe_nazwisko
+
+    def ustaw_pesel(self, nowy_pesel):
+        self.__pesel = nowy_pesel
+
+    def ustaw_telefon(self, nowy_numer):
+        self.__telefon = nowy_numer
+
+    def ustaw_stanowisko(self, nowe_stanowisko):
+        if not nowe_stanowisko.strip():
+            raise ValueError("Stanowisko nie moze byc puste")
+        self.__stanowisko = nowe_stanowisko
+
+    def ustaw_haslo(self, nowe_haslo):
+        self.__haslo = nowe_haslo
+    
+    def __str__(self):
+        return f"{self.__id:<5} | {self.imie:<10} | {self.nazwisko:<15} | {self.stanowisko:<15}"
+    
+    def __repr__(self):
+        return f"Pracownik(ID: {self.__id}, Imię: {self.imie}, Nazwisko: {self.nazwisko}, Stanowisko: {self.stanowisko})"
+    
+    def typ_osoby(self):
+        return "Pracownik"
+    
+    def zweryfikuj_haslo(self, podane_haslo):
+        return self.__haslo == podane_haslo
+    
+    def to_dict(self):
+        return {
+            "imie": self.imie, "nazwisko": self.nazwisko, "pesel": self.pesel,
+            "telefon": self.telefon, "id_pracownika": self.__id, "stanowisko": self.__stanowisko, "haslo": self.__haslo
+        }
+    
+    @classmethod
+    def from_dict(cls, d):
+        return cls(d["imie"], d["nazwisko"], d["pesel"], d["telefon"], d["id_pracownika"], d["stanowisko"], d["haslo"])
+
+
+class Schronisko():
+    def __init__(self, zwierzeta=None, pracownicy=None, historia_adopcji=None):
+        self.__zwierzeta = zwierzeta if zwierzeta is not None else []
+        self.__pracownicy = pracownicy if pracownicy is not None else []
+        self.__historia_adopcji = historia_adopcji if historia_adopcji is not None else []
+        self.__klienci = []
+
+    @property
+    def zwierzeta(self):
+        return self.__zwierzeta
+    
+    @property
+    def pracownicy(self):
+        return self.__pracownicy
+    
+    @property
+    def klienci(self):
+        return self.__klienci
+    
+    @property
+    def historia_adopcji(self):
+        return self.__historia_adopcji
+
+    def dodaj_zwierze(self, zwierze):
+        if not isinstance(zwierze, Zwierze):
+            raise TypeError("Możesz dodać tylko obiekt klasy Zwierze!")
+        self.__zwierzeta.append(zwierze)
+        print(f"Dodano zwierze: {zwierze.get_info()}")
+    
+    def dodaj_pracownika(self, pracownik):
+        if not isinstance(pracownik, Pracownik):
+            raise TypeError("Możesz dodać tylko obiekt klasy Pracownik!")
+        self.__pracownicy.append(pracownik)
+        print(f"Dodano pracownika: {pracownik.__repr__()}")
+
+    def usun_pracownika(self, pracownik):
+        if not pracownik in self.__pracownicy:
+            raise TypeError("Nie ma takiego pracownika")
+        self.__pracownicy.remove(pracownik)
+        print(f'[SYSTEM] Usunieto pracownika: {pracownik.imie} {pracownik.nazwisko}')
+
+    def dodaj_klienta(self, klient):
+        if not isinstance(klient, OsobaAdoptujaca):
+            raise TypeError("Możesz dodać tylko obiekt klasy OsobaAdoptujaca!")
+        self.__klienci.append(klient)
+        print(f"Dodano klienta: {klient}")
+
+    def filtruj_zwierzeta(self, kategoria, wartosc):
+        przefiltrowane_zwierzeta = []
+        for z in self.__zwierzeta:
+            dane = z.to_dict()
+            if str(dane.get(kategoria, "")).lower() == str(wartosc).lower():
+                przefiltrowane_zwierzeta.append(z)
+        return przefiltrowane_zwierzeta
+
+    def znajdz_zwierze_po_id(self, id_zwierzecia):
+        for z in self.__zwierzeta:
+            if str(z.id) == str(id_zwierzecia):
+                return z
+        return None
+    
+    def znajdz_pracownika_po_id(self, id_pracownika):
+        for p in self.__pracownicy:
+            if str(p.id) == str(id_pracownika):
+                return p
+        return None
+    
+    def znajdz_klienta_po_peselu(self, pesel):
+        for k in self.__klienci:
+            if str(k.pesel) == str(pesel):
+                return k
+        return None
+    
+    def adopcja(self, zwierze, osoba, zalogowany_pracownik, data=None):
+        moze_adoptowac, powod = osoba.czy_moze_adoptowac()
+        if not moze_adoptowac:
+            return f'Adopcja niemozliwa. Powod {powod}'
+
+        if data is None:
+            data = datetime.datetime.now()
+        if zwierze.status.lower() == "adoptowane":
+            raise ValueError(f"Zwierzę o ID {zwierze.id} zostało już wcześniej adoptowane!")
+        adopcja = Adopcja(data, zwierze.id, osoba.pesel, zalogowany_pracownik.id)
+        self.__historia_adopcji.append(adopcja)
+        zwierze.zmien_status(zalogowany_pracownik, "Adoptowany")
+        return "Adopcja przebiegła pomyślnie!"
+
+    def zapisz_dane(self):
+        try:
+            dane_do_zapisu = {
+                "zwierzeta": [z.to_dict() for z in self.__zwierzeta],
+                "pracownicy": [p.to_dict() for p in self.__pracownicy],
+                "klienci": [k.to_dict() for k in self.__klienci],
+                "adopcje": [a.to_dict() for a in self.__historia_adopcji]
+            }
+            with open("baza.json", "w", encoding="utf-8") as f:
+                json.dump(dane_do_zapisu, f, indent=4, ensure_ascii=False)
+            print("[SYSTEM] Dane zostały zapisane.")
+        except Exception as e:
+            print(f"[[SYSTEM] Błąd zapisu pliku]: {e}")
+
+    def wczytaj_dane(self):
+        if not os.path.exists("baza.json"):
+            print("[SYSTEM] Brak pliku z danymi.")
+            return
+        try:
+            with open("baza.json", "r", encoding="utf-8") as f:
+                dane = json.load(f)
+            self.__zwierzeta = [Zwierze.from_dict(z) for z in dane.get("zwierzeta", [])]
+            self.__pracownicy = [Pracownik.from_dict(p) for p in dane.get("pracownicy", [])]
+            self.__klienci = [OsobaAdoptujaca.from_dict(k) for k in dane.get("klienci", [])]
+            self.__historia_adopcji = [Adopcja.from_dict(a) for a in dane.get("adopcje", [])]
+            print(f"[SYSTEM] Wczytano {len(self.__zwierzeta)} zwierząt z pliku. {len(self.__pracownicy)} pracowników. {len(self.__klienci)} klientów. {len(self.__historia_adopcji)} adopcji.")
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"[[SYSTEM] Błąd struktury danych pliku]: {e}")
+        except Exception as e:
+            print(f"[[SYSTEM] Błąd odczytu pliku]: {e}")
+
+    def generuj_raport(self):
+        liczba_psow = 0
+        liczba_kotow = 0
+
+        do_adopcji = 0
+        w_leczeniu = 0
+        kwarantanna = 0
+        adoptowane = 0
+
+        for zwierzak in self.__zwierzeta:
+            dane = zwierzak.to_dict()
+
+            if dane['gatunek'].lower() == 'pies':
+                liczba_psow += 1
+            elif dane['gatunek'].lower() == 'kot':
+                liczba_kotow += 1
+            
+            if zwierzak.status.lower() == 'do adopcji':
+                do_adopcji += 1
+            elif zwierzak.status.lower() == 'w leczeniu':
+                w_leczeniu += 1
+            elif zwierzak.status.lower() == 'kwarantanna':
+                kwarantanna += 1
+            elif zwierzak.status.lower() == 'adoptowane':
+                adoptowane += 1 
+            
+        adopcja_styczen = 0
+        adopcja_luty = 0
+        adopcja_marzec = 0
+        adopcja_kwiecien = 0
+        adopcja_maj = 0
+        adopcja_czerwiec = 0
+        adopcja_lipiec = 0
+        adopcja_sierpien = 0
+        adopcja_wrzesien = 0
+        adopcja_pazdziernik = 0
+        adopcja_listopad = 0
+        adopcja_grudzien = 0
+
+        for adopcja in self.__historia_adopcji:
+            dane_adopcji = adopcja.to_dict()
+            data = dane_adopcji['data']
+
+            if "2026-01" in str(data):
+                adopcja_styczen += 1
+            elif "2026-02" in str(data):
+                adopcja_luty += 1
+            elif "2026-03" in str(data):
+                adopcja_marzec += 1
+            elif "2026-04" in str(data):
+                adopcja_kwiecien += 1
+            elif "2026-05" in str(data):
+                adopcja_maj += 1
+            elif "2026-06" in str(data):
+                adopcja_czerwiec += 1
+            elif "2026-07" in str(data):
+                adopcja_lipiec += 1
+            elif "2026-08" in str(data):
+                adopcja_sierpien += 1
+            elif "2026-09" in str(data):
+                adopcja_wrzesien += 1
+            elif "2026-10" in str(data):
+                adopcja_pazdziernik += 1
+            elif "2026-11" in str(data):
+                adopcja_listopad += 1
+            elif "2026-12" in str(data):
+                adopcja_grudzien += 1            
+
+        raport = "---------------------------------------------------\n"
+        raport += "                RAPORT SCHRONISKA\n"
+        raport += "---------------------------------------------------\n"
+        raport += f"Ogólna liczba zwierząt: {len(self.__zwierzeta)}\n"
+        raport += f" - Psy: {liczba_psow}\n"
+        raport += f" - Koty: {liczba_kotow}\n\n"
+        raport += "---------------------------------------------------\n"
+        raport += "Statusy zwierząt:\n"
+        raport += f" - Do adopcji: {do_adopcji}\n"
+        raport += f" - W leczeniu: {w_leczeniu}\n"
+        raport += f" - Kwarantanna: {kwarantanna}\n"
+        raport += f" - Adoptowane: {adoptowane}\n\n"
+        raport += "---------------------------------------------------\n"
+        raport += "Adopcje w roku 2026:\n"
+        raport += f" - Styczen: {adopcja_styczen}\n"
+        raport += f" - Luty: {adopcja_luty}\n"
+        raport += f" - Marzec: {adopcja_marzec}\n"
+        raport += f" - Kwiecien: {adopcja_kwiecien}\n"
+        raport += f" - Maj: {adopcja_maj}\n"
+        raport += f" - Czerwiec: {adopcja_czerwiec}\n"
+        raport += f" - Lipiec: {adopcja_lipiec}\n"
+        raport += f" - Sierpien: {adopcja_sierpien}\n"
+        raport += f" - Wrzesien: {adopcja_wrzesien}\n"
+        raport += f" - Pazdziernik: {adopcja_pazdziernik}\n"
+        raport += f" - Listopad: {adopcja_listopad}\n"
+        raport += f" - Grudzien: {adopcja_grudzien}\n"
+        raport += "---------------------------------------------------\n"
+
+        print('Raport wygenerowano pomyslnie')
+
+        with open("raport.txt", "w", encoding="utf-8") as plik:
+            plik.write(raport)
 
 
 def logowanie(schronisko):
@@ -393,3 +868,4 @@ def uruchom_menu():
 
 if __name__ == "__main__":
     uruchom_menu()
+
